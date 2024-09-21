@@ -27,6 +27,14 @@ namespace AutoSharp.Lexer
         CHAR, //char
         ADD, //suma
         SUBS, //resta
+        USING,
+        NAMESPACE,
+        CLASS,
+        INTERNAL,
+        STATIC,
+        PUBLIC,
+        PRIVATE,
+        VOID
     }
 
 }

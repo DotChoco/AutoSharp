@@ -1,4 +1,6 @@
 ﻿
+using System.Xml.Serialization;
+
 namespace AutoSharp.Lexer
 {
     public static class Cons
@@ -67,6 +69,23 @@ namespace AutoSharp.Lexer
         /// ASCII para el slash
         /// </summary>
         public const int SLASH = 47;
+
+
+        public const string INTERNAL = "internal";
+        public const string PUBLIC = "public";
+        public const string PRIVATE = "private";
+        public const string NAMESPACE = "namespace";
+        public const string USING = "using";
+        public const string CLASS = "class";
+        public const string STATIC = "static";
+
+        public const string VOID_WORD = "void";
+        public const string STRING_WORD = "string";
+        public const string CHAR_WORD = "char";
+        public const string INT_WORD = "int";
+        public const string FLOAT_WORD = "float";
+        public const string BOOL_WORD = "bool";
+
 
     }
     public enum OpEnum

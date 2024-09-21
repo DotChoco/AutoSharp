@@ -1,4 +1,6 @@
 ﻿using AutoSharp.Lexer;
+using AutoSharp.Properties;
+
 namespace AutoSharp
 {
 
@@ -8,9 +10,9 @@ namespace AutoSharp
         {
             int num = default;
             int res = num + 1;
-
+            
             Console.WriteLine("Hello, World!");
-            Lexer.Lexer lexer = new(@"C:\Users\carlo\Downloads\test.cs");
+            Lexer.Lexer lexer = new(Resources.test, false);
         }
     }
 }

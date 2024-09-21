@@ -1,0 +1,16 @@
+namespace AutoSharp
+{
+    using AutoSharp.Lexer;
+
+    internal class Program
+    {
+        static void Main(string[] args)
+        {
+            int num = 12;
+            float res = num + 1.5;
+
+            Console.WriteLine('2');
+            //Console.WriteLine(res);
+        }
+    }
+}
