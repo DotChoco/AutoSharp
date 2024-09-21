@@ -70,6 +70,36 @@ namespace AutoSharp.Lexer
         /// </summary>
         public const int SLASH = 47;
 
+        /// <summary>
+        /// ASCII para el igual
+        /// </summary>
+        public const int EQUALS = 61;
+
+        /// <summary>
+        /// ASCII para el not
+        /// </summary>
+        public const int NOT = 33;
+
+        // <summary>
+        /// ASCII para la raiz
+        /// </summary>
+        public const int MULT = 42;
+
+        // <summary>
+        /// ASCII para el exponente
+        /// </summary>
+        public const int POW = 94;
+
+        // <summary>
+        /// ASCII para la resta
+        /// </summary>
+        public const int MINUS = 45;
+
+        // <summary>
+        /// ASCII para la suma
+        /// </summary>
+        public const int ADD = 43;
+
 
         public const string INTERNAL = "internal";
         public const string PUBLIC = "public";
@@ -86,18 +116,5 @@ namespace AutoSharp.Lexer
         public const string FLOAT_WORD = "float";
         public const string BOOL_WORD = "bool";
 
-
     }
-    public enum OpEnum
-    {
-        SCN = 0, //semicolon
-        PLUS, //Plus 
-        MINUS,
-        MULT,
-        DIVIDE,
-        SQR,
-        POW
-    }
-
-
 }

@@ -1,15 +1,18 @@
 ﻿
-using System.Text;
-
 namespace AutoSharp.Lexer
 {
     public class Lexer
     {
-        List<Tuple<string, TokEnum>> Lexems = new();
+
+        public List<Tuple<string, Tuple<TokEnum, int>>> LexemeList { get => Lexemes;}
+        
+        List<Tuple<string, Tuple<TokEnum, int>>> Lexemes = new();
         int NumLine = default;
-        public Lexer(string Data, bool IsPath) 
+        
+        
+        public Lexer(string Data, bool IsPath = false) 
         {
-            string data = default;
+            string data = string.Empty;
             if (IsPath){
                 StreamReader sr = new(Data);
                 data = sr.ReadToEnd();
@@ -33,9 +36,11 @@ namespace AutoSharp.Lexer
 
                 for (int index = 0; index < line.Length; index++)
                 {
-                    letter = line[index];
-                    if(word == "Lexer")
+                    //Debug
+                    if(word == "1")
                         Console.WriteLine("");
+
+                    letter = line[index];
                     // le doy el valor ASCII de cada caracter recorrido
                     ASCII = letter;
 
@@ -49,10 +54,10 @@ namespace AutoSharp.Lexer
                             {
                                 if (word != null && word != string.Empty)
                                 {
-                                    FillLexems(word);
+                                    FillLexems(word, NumLine+1);
                                     word = string.Empty;
                                 }
-                                FillLexems(letter.ToString());
+                                FillLexems(letter.ToString(), NumLine+1);
                                 continue;
                             }
 
@@ -68,13 +73,13 @@ namespace AutoSharp.Lexer
                                         continue;
                                     }
                                 }
-                                FillLexems(word);
+                                FillLexems(word, NumLine + 1);
                                 word = string.Empty;
                             }
                             if ((ASCII == Cons.SPACE || letter == line.Last())
                             && (word != null && word != string.Empty))
                             {
-                                FillLexems(word);
+                                FillLexems(word, NumLine + 1);
                                 word = string.Empty;
                             }
                         }
@@ -82,7 +87,7 @@ namespace AutoSharp.Lexer
                         {
                             if (word != null && word != string.Empty)
                             {
-                                FillLexems(word);
+                                FillLexems(word, NumLine + 1);
                                 word = string.Empty;
                             }
                             index += ChainLexemes(line, index);
@@ -93,7 +98,7 @@ namespace AutoSharp.Lexer
                         if ((ASCII == Cons.SPACE || letter == line.Last())
                             && (word != null && word != string.Empty))
                         {
-                            FillLexems(word);
+                            FillLexems(word, NumLine + 1);
                             word = string.Empty;
                         }
                     }
@@ -106,15 +111,15 @@ namespace AutoSharp.Lexer
 
 
         /// <summary>
-        /// Fill the Lexems List
+        /// Fill the Lexemes List
         /// </summary>
-        /// <param name="lexem"></param>
-        void FillLexems(string lexem, TokEnum token = default)
+        /// <param name="lexeme"></param>
+        void FillLexems(string lexeme, int line, TokEnum token = default)
         {
             if(token != default)
-                Lexems.Add(new(lexem, token));
+                Lexemes.Add(new(lexeme, new(token, line)));
             else
-                Lexems.Add(new(lexem, PrimitiveFilter(lexem)));
+                Lexemes.Add(new(lexeme, new(LexemFilter(lexeme), line)));
         }
 
         /// <summary>
@@ -147,13 +152,13 @@ namespace AutoSharp.Lexer
                         }
 
                         // Eliminar espacios en blanco al final, si es necesario
-                        FillLexems(lineCopy.TrimEnd(), TokEnum.SCMT);
+                        FillLexems(lineCopy.TrimEnd(), NumLine + 1 ,TokEnum.SCMT);
                         conter = line.Length;
                     }
                     else if(line[index] == Cons.STRING)
-                        FillLexems(word, TokEnum.STRING);
+                        FillLexems(word, NumLine + 1, TokEnum.STRING);
                     else if(line[index] == Cons.CHAR)
-                        FillLexems(word, TokEnum.CHAR);
+                        FillLexems(word, NumLine + 1, TokEnum.CHAR);
                     break;
                 }
                 else conter++;
@@ -170,85 +175,45 @@ namespace AutoSharp.Lexer
         /// <returns></returns>
         bool IsBracketOrSCN(int ASCII)
         {
-            if (ASCII == Cons.ORB || ASCII == Cons.CRB || ASCII == Cons.OSB 
+            return ASCII == Cons.ORB || ASCII == Cons.CRB || ASCII == Cons.OSB
             || ASCII == Cons.CSB || ASCII == Cons.OB || ASCII == Cons.CB
-            || ASCII == Cons.SCN)
-            {
-                return true;
-            }
-            return false;
+            || ASCII == Cons.SCN;
         }
 
-        TokEnum PrimitiveFilter(string lexem)
+        
+        TokEnum LexemFilter(string lexeme)
         {
-            if(lexem == ((char)Cons.SCN).ToString())
-                return TokEnum.SEMICOLON;
-            if(lexem == ((char)Cons.CB).ToString())
-                return TokEnum.CB;
-            else if (lexem == ((char)Cons.OB).ToString())
-                return TokEnum.OB;
-            else if (lexem == ((char)Cons.CSB).ToString())
-                return TokEnum.CSB;
-            else if (lexem == ((char)Cons.OSB).ToString())
-                return TokEnum.OSB;
-            else if (lexem == ((char)Cons.CRB).ToString())
-                return TokEnum.CRB;
-            else if (lexem == ((char)Cons.ORB).ToString())
-                return TokEnum.ORB;
+            //Brackes y PyC
+            if(Tokens.IsBracketOrSCN(lexeme, out TokEnum bracketToken))
+                return bracketToken;
 
-            if (IsFloat(lexem))
+            //Datos Numericos
+            if (Tokens.IsFloat(lexeme))
                 return TokEnum.FLOAT;
-            else if (IsInteger(lexem))
+            else if (Tokens.IsInteger(lexeme))
                 return TokEnum.INTEGER;
 
-            if(lexem == Cons.USING)
-                return TokEnum.USING;
-            else if (lexem == Cons.PRIVATE)
-                return TokEnum.PRIVATE;
-            else if (lexem == Cons.PUBLIC)
-                return TokEnum.PUBLIC;
-            else if (lexem == Cons.STATIC)
-                return TokEnum.STATIC;
-            else if (lexem == Cons.VOID_WORD)
-                return TokEnum.VOID;
-            else if (lexem == Cons.INTERNAL)
-                return TokEnum.INTERNAL;
-            else if (lexem == Cons.NAMESPACE)
-                return TokEnum.NAMESPACE;
-            else if (lexem == Cons.CLASS)
-                return TokEnum.CLASS;
+            //Encapsulamientos
+            if (Tokens.IsEncapsulation(lexeme))
+                return TokEnum.ENCAPSULATION;
 
-            if (lexem == Cons.STRING_WORD || lexem == Cons.CHAR_WORD
-                || lexem == Cons.INT_WORD || lexem == Cons.FLOAT_WORD
-                || lexem == Cons.BOOL_WORD)
+            //Palabras reservadas
+            if (Tokens.IsResevedWord(lexeme, out TokEnum reservedWordToken))
+                return reservedWordToken;
+
+            //Datos Primitivos
+            if (Tokens.IsPrimitive(lexeme))
                 return TokEnum.Type;
+
+            //Operadores
+            if(Tokens.IsOperator(lexeme, out TokEnum operatorToken))
+                return operatorToken;
 
             return TokEnum.IDENTIFIER;
         }
 
 
-        bool IsFloat(string lexem)
-        {
-            if (double.TryParse(lexem, out double floatValue)
-                && lexem.Contains(".") && floatValue % 1 != 0)
-            {
-                return true;
-            }
-            return false;
-        }
-        bool IsInteger(string lexem)
-        {
-            if (int.TryParse(lexem, out int floatValue)
-                && lexem.Contains(".") && floatValue % 1 != 0)
-            {
-                return true;
-            }
-            return false;
-        }
-
-
-
-        bool IsNumeric(string lexem) => double.TryParse(lexem, out double result);
+        bool IsNumeric(string lexeme) => double.TryParse(lexeme, out double result);
         
     }
 }

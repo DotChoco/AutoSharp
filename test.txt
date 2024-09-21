@@ -1,6 +1,6 @@
-namespace AutoSharp
+namespace Test
 {
-    using AutoSharp.Lexer;
+    using System.Text;
 
     internal class Program
     {
