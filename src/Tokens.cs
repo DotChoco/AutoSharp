@@ -57,63 +57,35 @@ namespace AutoSharp.Lexer
 
         public static bool IsOperator(string lexeme, out TokEnum token)
         {
-            if (lexeme == ((char)Cons.ADD).ToString())
+            var operators = new Dictionary<string, TokEnum>
             {
-                token = TokEnum.ADD;
+                { ((char)Cons.ADD).ToString(), TokEnum.ADD },
+                { ((char)Cons.MINUS).ToString(), TokEnum.MINUS },
+                { ((char)Cons.SLASH).ToString(), TokEnum.DIVIDE },
+                { ((char)Cons.POW).ToString(), TokEnum.POW },
+                { ((char)Cons.MULT).ToString(), TokEnum.MULT },
+                { ((char)Cons.EQUALS).ToString(), TokEnum.ASSIGNATION }
+            };
+
+            if (operators.TryGetValue(lexeme, out token))
                 return true;
-            }
-            else if (lexeme == ((char)Cons.MINUS).ToString())
-            {
-                token = TokEnum.MINUS;
-                return true;
-            }
-            else if (lexeme == ((char)Cons.SLASH).ToString())
-            {
-                token = TokEnum.DIVIDE;
-                return true;
-            }
-            else if (lexeme == ((char)Cons.POW).ToString())
-            {
-                token = TokEnum.POW;
-                return true;
-            }
-            else if (lexeme == ((char)Cons.MULT).ToString())
-            {
-                token = TokEnum.MULT;
-                return true;
-            }
-            else if (lexeme == ((char)Cons.EQUALS).ToString())
-            {
-                token = TokEnum.ASSIGNATION;
-                return true;
-            }
-             token = TokEnum.IDENTIFIER;
+
+            token = TokEnum.IDENTIFIER; // Valor por defecto si no es un operador
             return false;
         }
 
 
         public static bool IsResevedWord(string lexeme, out TokEnum token)
         {
-            if (lexeme == Cons.USING)
+            var words = new Dictionary<string, TokEnum>
             {
-                token = TokEnum.USING;
+                { Cons.USING, TokEnum.USING },
+                { Cons.VOID_WORD, TokEnum.VOID },
+                { Cons.NAMESPACE, TokEnum.NAMESPACE },
+                { Cons.CLASS, TokEnum.CLASS },
+            };
+            if (words.TryGetValue(lexeme, out token))
                 return true;
-            }
-            else if (lexeme == Cons.VOID_WORD)
-            {
-                token = TokEnum.VOID;
-                return true;
-            }
-            else if (lexeme == Cons.NAMESPACE)
-            {
-                token = TokEnum.NAMESPACE;
-                return true;
-            }
-            else if (lexeme == Cons.CLASS)
-            {
-                token = TokEnum.CLASS;
-                return true;
-            }
 
             token = TokEnum.IDENTIFIER;
             return false;
@@ -129,42 +101,21 @@ namespace AutoSharp.Lexer
 
         public static bool IsBracketOrSCN(string lexeme, out TokEnum token)
         {
-            if (lexeme == ((char)Cons.SCN).ToString()){
-                token = TokEnum.SEMICOLON;
-                return true;
-            }
-            if (lexeme == ((char)Cons.CB).ToString())
+            var operators = new Dictionary<string, TokEnum>
             {
-                token = TokEnum.CB;
-                return true;
-            }
-            else if (lexeme == ((char)Cons.OB).ToString())
-            {
-                token = TokEnum.OB;
-                return true;
-            }
-            else if (lexeme == ((char)Cons.CSB).ToString())
-            {
-                token = TokEnum.CSB;
-                return true;
-            }
-            else if (lexeme == ((char)Cons.OSB).ToString())
-            {
-                token = TokEnum.OSB;
-                return true;
-            }
-            else if (lexeme == ((char)Cons.CRB).ToString())
-            {
-                token = TokEnum.CRB;
-                return true;
-            }
-            else if (lexeme == ((char)Cons.ORB).ToString())
-            {
-                token = TokEnum.ORB;
-                return true;
-            }
+                { ((char)Cons.SCN).ToString(), TokEnum.SEMICOLON },
+                { ((char)Cons.CB).ToString(), TokEnum.CB },
+                { ((char)Cons.OB).ToString(), TokEnum.OB },
+                { ((char)Cons.CSB).ToString(), TokEnum.CSB },
+                { ((char)Cons.OSB).ToString(), TokEnum.OSB },
+                { ((char)Cons.CRB).ToString(), TokEnum.CRB },
+                { ((char)Cons.ORB).ToString(), TokEnum.ORB }
+            };
 
-            token = TokEnum.IDENTIFIER;
+            if (operators.TryGetValue(lexeme, out token))
+                return true;
+
+            token = TokEnum.IDENTIFIER; // Valor por defecto si no es un operador
             return false;
         }
 
